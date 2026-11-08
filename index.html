@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="RedJr Builders cashier, inventory and sales dashboard.">
+<meta name="theme-color" content="#e6eef8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RedJr Builders | Cashier & Inventory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen" class="login-screen">
+  <section class="login-brand">
+    <div class="brand-logo"><span class="logo">RJ</span><span>RedJr Builders<br>&amp; Construction Supply</span></div>
+    <div>
+      <h1>Sell faster.<br>Know your stock.</h1>
+      <p>One cashier screen for selling and adding products, plus a dashboard that shows your sales and what needs restocking.</p>
+      <div class="login-points"><span>✓ Cashier &amp; barcode scan</span><span>✓ Inventory alerts</span><span>✓ Sales dashboard</span></div>
+    </div>
+    <div class="login-footer">RedJr Builders and Construction Supply</div>
+  </section>
+  <section class="login-form-wrap">
+    <form class="login-card" id="loginForm">
+      <h2>Welcome back</h2>
+      <p>Sign in to open your store workspace.</p>
+      <label for="email">Email address</label>
+      <input id="email" type="email" required value="admin@redjr.test" autocomplete="username">
+      <label for="password">Password</label>
+      <input id="password" type="password" required value="redjr123" autocomplete="current-password">
+      <div class="field-help">Demo credentials are prefilled.</div>
+      <button class="primary" type="submit">Sign in</button>
+      <div class="demo-hint"><strong>Demo access</strong><br>Email: admin@redjr.test<br>Password: redjr123<br><span class="muted">Front-end demo only; it does not check real accounts.</span></div>
+    </form>
+  </section>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="app hidden">
+<aside id="sidebar" class="sidebar">
+  <div class="side-brand"><span class="logo">RJ</span><div><strong>RedJr Builders</strong><small>Construction Supply</small></div></div>
+  <nav class="nav" aria-label="Main navigation">
+    <button data-page="dashboard" class="active"><span class="nav-ico" data-ico="dashboard"></span>Dashboard</button>
+    <button data-page="pos"><span class="nav-ico" data-ico="cashier"></span>Cashier</button>
+    <button data-page="inventory"><span class="nav-ico" data-ico="box"></span>Inventory <span id="navLowCount" class="badge b-amber hidden"></span></button>
+    <button data-page="transactions"><span class="nav-ico" data-ico="receipt"></span>Transactions</button>
+  </nav>
+  <div class="side-bottom">Data is saved in this browser.<br>Prices include 12% VAT.</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="top-left"><button id="mobileMenu" class="secondary mobile-menu" aria-label="Open navigation">☰</button><h2 id="topTitle">Dashboard</h2></div>
+  <div class="top-actions">
+    <span id="todayLabel" class="date-label"></span>
+    <div class="profile-menu">
+      <button id="profileButton" class="avatar" aria-label="Open account menu">RJ</button>
+      <div id="profilePop" class="profile-pop hidden">
+        <button id="resetDemo">Reset demo data</button>
+        <button id="startFresh">Start fresh (go live)</button>
+        <button id="logoutButton">Sign out</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- ---------- DASHBOARD ---------- -->
+<section id="page-dashboard" class="page">
+  <div id="dashStats" class="stats3"></div>
+  <div class="dash-grid">
+    <section class="card rev-card">
+      <div class="card-head">
+        <div>
+          <div class="eyebrow">Revenue</div>
+          <h3 id="revTitle" class="card-title">—</h3>
+          <div id="revSub" class="card-sub"></div>
+        </div>
+        <div class="ctrl">
+          <div class="seg" id="revModeSeg" role="group" aria-label="Chart period"><button data-m="monthly" class="on">Monthly</button><button data-m="yearly">Yearly</button></div>
+          <select id="revRange" aria-label="Revenue range">
+            <option value="all">All time</option><option value="year">This year</option><option value="last12">Last 12 months</option><option value="last6">Last 6 months</option>
+          </select>
+        </div>
+      </div>
+      <div id="revChart" class="chart-wrap"></div>
+      <div id="revLegend" class="legend"></div>
+    </section>
+
+    <section class="card">
+      <h3 class="card-title">Inventory status</h3>
+      <div class="legend legend-box"><span class="legend-t">Color indicators</span><span><i class="dot" style="background:#e8834a"></i>Out of stock</span><span><i class="dot" style="background:#f0b13c"></i>Low</span><span><i class="dot" style="background:#34b36b"></i>High</span></div>
+      <div id="invStatus" class="inv-status"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div><div class="eyebrow">Latest transactions</div><h3 id="txTitle" class="card-title">This week</h3></div>
+        <select id="txPeriod" aria-label="Transactions period"><option value="today">Today</option><option value="week" selected>This week</option><option value="month">This month</option><option value="year">This year</option><option value="all">All time</option></select>
+      </div>
+      <div id="latestTx" class="table-wrap"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <div><div class="eyebrow">Top selling products</div><h3 id="topTitle2" class="card-title">All time</h3></div>
+        <select id="topPeriod" aria-label="Top products period"><option value="all" selected>All time</option><option value="today">Today</option><option value="week">This week</option><option value="month">This month</option><option value="year">This year</option></select>
+      </div>
+      <div id="topSelling"></div>
+    </section>
+  </div>
+</section>
+
+<!-- ---------- CASHIER (POS + PRODUCTS) ---------- -->
+<section id="page-pos" class="page hidden">
+  <div class="page-head">
+    <div><p>Scan or tap items to sell. Add new products and photos here too.</p></div>
+    <div class="page-actions">
+      <button id="posHeldBtn" class="outline">Held sales <span id="heldCount" class="badge b-gray">0</span></button>
+      <button id="addProductBtn" class="primary">＋ Add product</button>
+    </div>
+  </div>
+  <div class="order-layout">
+    <div>
+      <div class="toolbar">
+        <div class="search pos-search"><input id="posSearch" placeholder="Scan barcode, or type SKU / product name, then press Enter…" aria-label="Scan or search products" autocomplete="off"></div>
+        <button id="posScanBtn" class="outline" type="button">📷 Scan</button>
+        <select id="posSort" aria-label="Sort products"><option value="category">By category</option><option value="name">Name A–Z</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="stock">Stock: lowest first</option></select>
+      </div>
+      <div id="posCategoryChips" class="category-row" style="margin-bottom:15px"></div>
+      <div id="posGrid" class="pos-grid"></div>
+    </div>
+    <button id="posMobileBar" class="primary mobile-cartbar hidden"></button>
+    <aside id="posCartPanel" class="card cart-panel">
+      <div class="card-head"><div><h3 class="card-title sm">Current sale</h3><div class="card-sub">Tap or scan a product to add it</div></div><span id="posCount" class="badge b-blue">0 items</span></div>
+      <label for="posCustomer" style="margin-top:4px">Customer (optional)</label><input id="posCustomer" placeholder="Walk-in customer">
+      <div id="posLines" class="pos-cart-lines"></div>
+      <div class="disc-row">
+        <div><label for="posDiscType">Discount</label><select id="posDiscType"><option value="none">No discount</option><option value="senior">Senior citizen (20%)</option><option value="pwd">PWD (20%)</option><option value="pct">Custom percent</option><option value="amt">Custom amount</option></select></div>
+        <div id="posDiscValWrap" class="hidden"><label for="posDiscVal" id="posDiscLabel">Value</label><input id="posDiscVal" type="number" min="0" step="0.01"></div>
+      </div>
+      <div id="posSummary"></div>
+      <div class="cart-actions">
+        <button id="posChargeBtn" class="primary charge-btn">Charge</button>
+        <div class="two-btn"><button id="posHoldBtn" class="outline">Hold sale</button><button id="posClearBtn" class="outline">Clear</button></div>
+      </div>
+      <p class="tiny muted">Shortcuts: F2 search · F9 charge</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ---------- INVENTORY ---------- -->
+<section id="page-inventory" class="page hidden">
+  <div class="page-head">
+    <div><p>Check stock levels, add stock that arrived, and edit product details.</p></div>
+    <div class="page-actions"><button class="outline" onclick="exportCSV('inventory')">Export CSV</button></div>
+  </div>
+  <div id="inventoryStats" class="stats4"></div>
+  <section class="card">
+    <div class="toolbar">
+      <div class="search"><input id="inventorySearch" placeholder="Search name, SKU or barcode…" aria-label="Search inventory"></div>
+      <select id="invCategory" aria-label="Category"></select>
+      <select id="stockFilter" aria-label="Stock level"><option value="All">All stock levels</option><option value="Out of Stock">Out of stock</option><option value="Low Stock">Low stock</option><option value="In Stock">High / in stock</option></select>
+    </div>
+    <div id="inventoryTable" class="table-wrap"></div>
+  </section>
+</section>
+
+<!-- ---------- TRANSACTIONS ---------- -->
+<section id="page-transactions" class="page hidden">
+  <div class="page-head">
+    <div><p>Every sale, with receipts and refunds.</p></div>
+    <div class="page-actions"><button class="outline" onclick="openDaySummary()">Today’s summary</button><button class="outline" onclick="exportCSV('sales')">Export CSV</button></div>
+  </div>
+  <div id="txStats" class="stats4"></div>
+  <section class="card">
+    <div class="toolbar">
+      <div class="search"><input id="txSearch" placeholder="Search receipt no., customer or product…" aria-label="Search transactions"></div>
+      <select id="txFilterPeriod" aria-label="Period"><option value="all">All time</option><option value="today">Today</option><option value="week">This week</option><option value="month">This month</option><option value="year">This year</option></select>
+      <select id="txFilterStatus" aria-label="Status"><option value="All">All statuses</option><option>Completed</option><option>Partially Refunded</option><option>Refunded</option></select>
+    </div>
+    <div id="txTable" class="table-wrap"></div>
+  </section>
+</section>
+
+<div class="footer-note">RedJr Builders and Construction Supply</div>
+</div>
+</main>
+</div>
+
+<div id="modalRoot"></div>
+<div id="scanRoot"></div>
+<div id="toastRegion" class="toast-region" aria-live="polite"></div>
+<script src="script.js" defer></script>
+</body>
+</html>
